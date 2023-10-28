@@ -11,8 +11,7 @@
       "options": {
         "platform": "node",
         "outputPath": "dist/apps/torii-api",
-        "format": ["cjs"],
-        "bundle": false,
+        "bundle": true,
         "main": "apps/torii-api/src/main.ts",
         "tsConfig": "apps/torii-api/tsconfig.app.json",
         "assets": ["apps/torii-api/src/assets"],
@@ -20,14 +19,7 @@
       },
       "configurations": {
         "development": {},
-        "production": {
-          "esbuildOptions": {
-            "sourcemap": false,
-            "outExtension": {
-              ".js": ".js"
-            }
-          }
-        }
+        "production": {}
       }
     },
     "serve": {
