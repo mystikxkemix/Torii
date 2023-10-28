@@ -16,13 +16,7 @@
         "main": "apps/torii-api/src/main.ts",
         "tsConfig": "apps/torii-api/tsconfig.app.json",
         "assets": ["apps/torii-api/src/assets"],
-        "generatePackageJson": true,
-        "esbuildOptions": {
-          "sourcemap": true,
-          "outExtension": {
-            ".js": ".js"
-          }
-        }
+        "generatePackageJson": true
       },
       "configurations": {
         "development": {},
