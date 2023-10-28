@@ -1,0 +1,3 @@
+const RssService = {};
+
+export { RssService };

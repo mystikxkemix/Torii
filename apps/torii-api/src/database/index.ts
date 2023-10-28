@@ -14,6 +14,7 @@ async function connect() {
   sequelize = new Sequelize({
     dialect: "sqlite",
     storage: filePath,
+    logging: false,
   });
 
   await initRssFeed(sequelize);

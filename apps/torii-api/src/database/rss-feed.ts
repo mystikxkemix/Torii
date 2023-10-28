@@ -2,8 +2,9 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 
 class RssFeed extends Model {
   declare id: number;
-  public name: string;
-  public url: string;
+  declare name: string;
+  declare url: string;
+  declare lastFetch?: Date;
 
   static async updateRssFeed(
     id: number,
@@ -50,6 +51,10 @@ export async function init(sequelize: Sequelize) {
       url: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      lastFetch: {
+        type: DataTypes.DATE,
+        allowNull: true,
       },
     },
     { sequelize }

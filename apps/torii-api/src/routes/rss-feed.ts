@@ -45,7 +45,7 @@ RssFeedRouter.patch(
       );
 
       res.send({ entry: updatedRss });
-    } catch (e) {
+    } catch (e: any) {
       res.status(500).send({ error: e.toString() });
     }
   }
@@ -61,7 +61,7 @@ RssFeedRouter.delete(
       );
 
       res.send({ deleted: deletedFeed });
-    } catch (e) {
+    } catch (e: any) {
       res.status(500).send({ error: e.toString() });
     }
   }
