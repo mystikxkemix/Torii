@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { Sequelize, SyncOptions } from "sequelize";
-import RssFeed, { init as initRssFeed } from "./rss-feed";
+import RssFeedData, { init as initRssFeed } from "./rss-feed-data";
 
 export const DataFolder = process.env.DATA_PATH ?? "./data";
 const folderPath = path.join(DataFolder, "databases");
@@ -45,6 +45,6 @@ export default {
   connect,
   sync,
   models: {
-    RssFeed,
+    RssFeedData,
   },
 };
