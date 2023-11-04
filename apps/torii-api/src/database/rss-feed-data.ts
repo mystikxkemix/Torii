@@ -15,7 +15,9 @@ class RssFeedData extends Model {
   declare lastFetch?: Date;
   declare delayNumber: number;
   declare delayUnit: DelayUnit;
+  declare enabled: boolean;
   private _parser: Parser;
+  private _refetch?: NodeJS.Timeout;
 
   constructor() {
     super();
@@ -28,6 +30,7 @@ class RssFeedData extends Model {
     newData.url = options.url;
     newData.delayNumber = options.delayNumber;
     newData.delayUnit = options.delayUnit;
+    newData.enabled = true;
 
     return newData;
   }
@@ -69,6 +72,7 @@ class RssFeedData extends Model {
         items = feed.items.filter((i) => new Date(i.isoDate) > this.lastFetch);
 
       // START TORRENT WITH ITEMS
+      console.log(this.name, "Fetch those items", items);
     }
 
     this.lastFetch = new Date();
@@ -77,9 +81,20 @@ class RssFeedData extends Model {
     this.startDelay();
   }
 
+  public async toggleEnable(enable: boolean) {
+    if (this.enabled === enable) return;
+
+    this.enabled = enable;
+    if (enable === false && this._refetch) {
+      clearTimeout(this._refetch);
+    }
+
+    await this.save();
+  }
+
   private startDelay() {
-    const delayTime = convertDelayType(this.delayUnit) * this.delayNumber;
-    setTimeout(() => {
+    const delayTime = convertDelayUnit(this.delayUnit) * this.delayNumber;
+    this._refetch = setTimeout(() => {
       this.fetch();
     }, delayTime);
   }
@@ -88,14 +103,17 @@ class RssFeedData extends Model {
 export enum DelayUnit {
   hours,
   minutes,
+  seconds,
 }
 
-export function convertDelayType(delayType: DelayUnit): number {
-  switch (delayType) {
-    case DelayUnit.hours:
+export function convertDelayUnit(delayUnit: DelayUnit): number {
+  switch (delayUnit.toString()) {
+    case "hours":
       return 60 * 60 * 1000;
-    case DelayUnit.minutes:
+    case "minutes":
       return 60 * 1000;
+    case "seconds":
+      return 1000;
   }
 
   return 0;
@@ -121,16 +139,21 @@ export async function init(sequelize: Sequelize) {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      delayType: {
+      delayUnit: {
         type: DataTypes.ENUM,
+        values: ["hours", "minutes", "seconds"],
         allowNull: false,
       },
       lastFetch: {
         type: DataTypes.DATE,
         allowNull: true,
       },
+      enabled: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
     },
-    { sequelize }
+    { sequelize, modelName: "RssFeedData" }
   );
   console.log("init", RssFeedData);
   await RssFeedData.sync({ alter: true });
